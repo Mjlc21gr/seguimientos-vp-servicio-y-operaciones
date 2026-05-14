@@ -190,7 +190,7 @@ export default function App() {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isEditingTask, setIsEditingTask] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
-  const [currentCategory, setCurrentCategory] = useState<'all' | 'assigned' | 'overdue' | 'dashboard' | 'managed'>('all');
+  const [currentCategory, setCurrentCategory] = useState<'all' | 'assigned' | 'overdue' | 'dashboard' | 'managed' | 'alert'>('all');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [activeAlert, setActiveAlert] = useState<{ type: 'overdue' | 'near', count: number } | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -351,10 +351,11 @@ export default function App() {
       const isComplete = t.status === TaskStatus.TERMINADO;
       if (isComplete || !t.commitmentDate) return false;
       const date = safeParseDate(t.commitmentDate);
-      return date && isWithinInterval(date, { 
-        start: new Date(), 
-        end: addDays(new Date(), 2) 
-      });
+      if (!date) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const limit = addDays(today, 3); // today + 2 days (inclusive)
+      return date >= today && date < limit;
     });
     
     const nearExpiration = nearExpirationList.length;
@@ -402,6 +403,21 @@ export default function App() {
         }
       } else if (currentCategory === 'managed') {
         matchesCategory = t.status === TaskStatus.TERMINADO;
+      } else if (currentCategory === 'alert') {
+        const isComplete = t.status === TaskStatus.TERMINADO;
+        if (isComplete || !t.commitmentDate) {
+          matchesCategory = false;
+        } else {
+          const date = safeParseDate(t.commitmentDate);
+          if (!date) {
+            matchesCategory = false;
+          } else {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const limit = addDays(today, 3);
+            matchesCategory = date >= today && date < limit;
+          }
+        }
       }
 
       return matchesManager && matchesSearch && matchesCategory;
@@ -791,13 +807,14 @@ export default function App() {
               {currentCategory === 'assigned' && "Tareas Asignadas"}
               {currentCategory === 'managed' && "Tareas Gestionadas"}
               {currentCategory === 'overdue' && "Tareas Vencidas"}
+              {currentCategory === 'alert' && "Tareas En Alerta"}
             </h1>
             <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
               <LayoutDashboard size={14} />
               <span>{format(new Date(), 'MMMM d, yyyy', { locale: es })}</span>
               <span className="w-1 h-1 bg-slate-300 rounded-full mx-1"></span>
               <span className="text-brand">
-                {currentCategory === 'managed' ? `${stats.completed} terminadas` : `${stats.pending} pendientes`}
+                {currentCategory === 'managed' ? `${stats.completed} terminadas` : currentCategory === 'alert' ? `${stats.nearExpiration} en alerta` : `${stats.pending} pendientes`}
               </span>
             </div>
           </div>
@@ -837,7 +854,8 @@ export default function App() {
               icon={<AlertCircle className="text-orange-600" size={24} />}
               color="orange"
               showWarning={stats.nearExpiration > 0}
-              onClick={() => setCurrentCategory('assigned')}
+              onClick={() => setCurrentCategory('alert')}
+              active={currentCategory === 'alert'}
             />
             <StatCard 
               label="Vencidas" 
