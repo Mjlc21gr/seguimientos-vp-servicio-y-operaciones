@@ -34,7 +34,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { format, isPast, isToday, addDays, isWithinInterval, parseISO, differenceInDays, isValid, parse, startOfMonth, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Task, TaskStatus, TaskType, Manager, User as UserType } from './types';
+import { Task, TaskStatus, Manager, User as UserType } from './types';
 import { cn } from './lib/utils';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
@@ -187,7 +187,6 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
   const [filterManager, setFilterManager] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterTaskType, setFilterTaskType] = useState<string>('all');
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isEditingTask, setIsEditingTask] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
@@ -387,7 +386,6 @@ export default function App() {
   const filteredTasks = useMemo(() => {
     return tasks.filter(t => {
       const matchesManager = filterManager === 'all' || t.assignedTo === filterManager;
-      const matchesType = filterTaskType === 'all' || t.taskType === filterTaskType;
       const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                              (t.observations && t.observations.toLowerCase().includes(searchQuery.toLowerCase()));
       
@@ -406,7 +404,7 @@ export default function App() {
         matchesCategory = t.status === TaskStatus.TERMINADO;
       }
 
-      return matchesManager && matchesType && matchesSearch && matchesCategory;
+      return matchesManager && matchesSearch && matchesCategory;
     }).sort((a, b) => {
       const dateA = safeParseDate(a.commitmentDate || a.dueDate);
       const dateB = safeParseDate(b.commitmentDate || b.dueDate);
@@ -414,7 +412,7 @@ export default function App() {
       if (!dateB) return -1;
       return dateA.getTime() - dateB.getTime();
     });
-  }, [tasks, filterManager, filterTaskType, searchQuery, currentCategory]);
+  }, [tasks, filterManager, searchQuery, currentCategory]);
 
   const handleUpdateTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -908,20 +906,6 @@ export default function App() {
           </div>
           
           <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <Filter size={16} className="text-slate-400" />
-              <select 
-                className="bg-slate-50 border-none rounded-2xl px-5 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white w-full md:w-48 cursor-pointer appearance-none text-slate-600"
-                value={filterTaskType}
-                onChange={(e) => setFilterTaskType(e.target.value)}
-              >
-                <option value="all">Filtro: Tipo</option>
-                {Object.values(TaskType).map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
             {user.role === 'admin' && (
               <div className="flex items-center gap-3 w-full md:w-auto">
                 <Filter size={16} className="text-slate-400" />
@@ -1066,18 +1050,6 @@ export default function App() {
                       {Object.values(TaskStatus).map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Tipo de Tarea</label>
-                    <select 
-                      required
-                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand transition-all font-bold text-slate-700 appearance-none"
-                      value={newTask.taskType || ''}
-                      onChange={e => setNewTask({...newTask, taskType: e.target.value as TaskType})}
-                    >
-                      <option value="">Seleccione tipo...</option>
-                      {Object.values(TaskType).map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -1167,18 +1139,6 @@ export default function App() {
                       value={taskToEdit.dueDate || ''}
                       onChange={e => setTaskToEdit({...taskToEdit, dueDate: e.target.value})}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Tipo de Tarea</label>
-                    <select 
-                      disabled={user.role !== 'admin'}
-                      className="w-full px-5 md:px-6 py-3 md:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand transition-all font-bold text-slate-700 appearance-none disabled:opacity-60"
-                      value={taskToEdit.taskType || ''}
-                      onChange={e => setTaskToEdit({...taskToEdit, taskType: e.target.value as TaskType})}
-                    >
-                      <option value="">Sin tipo</option>
-                      {Object.values(TaskType).map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Estado</label>
@@ -1452,11 +1412,6 @@ function TaskCard({ task, managers }: { task: Task, managers: Manager[] }) {
           )}>
             {task.title}
           </h3>
-          {task.taskType && (
-            <span className="text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-[0.1em] bg-slate-900 text-white shadow-sm">
-              {task.taskType}
-            </span>
-          )}
           <span className={cn("text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-[0.1em] shadow-sm", statusColors[task.status])}>
             {task.status}
           </span>
