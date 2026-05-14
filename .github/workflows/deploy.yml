@@ -39,7 +39,7 @@ jobs:
             GOOGLE_SERVICE_ACCOUNT_EMAIL=data-cls-dim-asignacion@fifth-audio-423920-g2.iam.gserviceaccount.com
             GOOGLE_SPREADSHEET_ID=1MsSVQ9694qRisT5URamzgGFq8KPA949KP5S7E3O6DFU
             GOOGLE_SHEET_NAME=Tareas
-            SMTP_FROM_NAME=Seguimientos VP - Admin
+            SMTP_FROM_NAME=MARIA DEL PILAR FALLA OCHOA
             GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
             SMTP_USER=${{ secrets.SMTP_USER }}
             SMTP_PASS=${{ secrets.SMTP_PASS }}
