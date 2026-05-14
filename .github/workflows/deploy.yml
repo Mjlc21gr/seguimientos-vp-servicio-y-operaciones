@@ -28,19 +28,18 @@ jobs:
           service: seguimientos-vp
           region: us-central1
           source: .
-          env_vars: |
-            NODE_ENV=production
-            GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-            GOOGLE_SPREADSHEET_ID=${{ secrets.GOOGLE_SPREADSHEET_ID }}
-            GOOGLE_SHEET_NAME=${{ secrets.GOOGLE_SHEET_NAME }}
-            GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
-            SMTP_USER=${{ secrets.SMTP_USER }}
-            SMTP_PASS=${{ secrets.SMTP_PASS }}
-            SMTP_FROM_NAME=${{ secrets.SMTP_FROM_NAME }}
           flags: |
             --allow-unauthenticated
             --port=8080
             --memory=512Mi
-            --cpu=1
-            --min-instances=0
-            --max-instances=3
+            --service-account=github-deploy@fifth-audio-423920-g2.iam.gserviceaccount.com
+            --build-service-account=projects/fifth-audio-423920-g2/serviceAccounts/github-deploy@fifth-audio-423920-g2.iam.gserviceaccount.com
+          env_vars: |
+            NODE_ENV=production
+            GOOGLE_SERVICE_ACCOUNT_EMAIL=data-cls-dim-asignacion@fifth-audio-423920-g2.iam.gserviceaccount.com
+            GOOGLE_SPREADSHEET_ID=1MsSVQ9694qRisT5URamzgGFq8KPA949KP5S7E3O6DFU
+            GOOGLE_SHEET_NAME=Tareas
+            SMTP_FROM_NAME=Seguimientos VP - Admin
+            GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
+            SMTP_USER=${{ secrets.SMTP_USER }}
+            SMTP_PASS=${{ secrets.SMTP_PASS }}
