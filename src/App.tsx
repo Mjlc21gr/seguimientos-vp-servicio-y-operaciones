@@ -968,7 +968,7 @@ export default function App() {
       {/* Add Task Overlay - Form implementation */}
       <AnimatePresence>
         {isAddingTask && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -980,23 +980,23 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 40 }}
-              className="bg-white rounded-[48px] shadow-2xl w-full max-w-2xl p-0 relative z-10 overflow-hidden border border-slate-100"
+              className="bg-white rounded-3xl md:rounded-[48px] shadow-2xl w-full max-w-2xl max-h-[90vh] p-0 relative z-10 overflow-hidden border border-slate-100 flex flex-col"
             >
-              <div className="p-10 border-b border-slate-100 flex items-center justify-between">
+              <div className="p-6 md:p-10 border-b border-slate-100 flex items-center justify-between shrink-0">
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight text-slate-800">Nueva Tarea</h2>
-                  <p className="text-slate-400 text-sm font-semibold">Completa los datos para registrar en Google Sheets.</p>
+                  <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800">Nueva Tarea</h2>
+                  <p className="text-slate-400 text-xs md:text-sm font-semibold">Completa los datos para registrar en Google Sheets.</p>
                 </div>
                 <button 
                   onClick={() => setIsAddingTask(false)}
-                  className="p-3 hover:bg-slate-50 rounded-2xl transition-colors text-slate-400"
+                  className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors text-slate-400"
                 >
                   <X size={24} />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateTask} className="p-10 space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <form onSubmit={handleCreateTask} className="p-6 md:p-10 space-y-6 md:space-y-8 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Título de la Tarea</label>
                     <input 
@@ -1063,7 +1063,7 @@ export default function App() {
                   />
                 </div>
 
-                <div className="flex gap-4 justify-end pt-6">
+                <div className="flex flex-col md:flex-row gap-4 justify-end pt-4 md:pt-6">
                   <button 
                     type="button"
                     onClick={() => setIsAddingTask(false)} 
@@ -1088,7 +1088,7 @@ export default function App() {
       {/* Edit Task Overlay */}
       <AnimatePresence>
         {isEditingTask && taskToEdit && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1100,9 +1100,9 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 40 }}
-              className="bg-white rounded-[40px] md:rounded-[48px] shadow-2xl w-full max-w-2xl p-0 relative z-10 overflow-hidden border border-slate-100"
+              className="bg-white rounded-3xl md:rounded-[48px] shadow-2xl w-full max-w-2xl max-h-[90vh] p-0 relative z-10 overflow-hidden border border-slate-100 flex flex-col"
             >
-              <div className="p-6 md:p-10 border-b border-slate-100 flex items-center justify-between">
+              <div className="p-6 md:p-10 border-b border-slate-100 flex items-center justify-between shrink-0">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800">Gestionar Tarea</h2>
                   <p className="text-slate-400 text-xs md:sm font-semibold">
@@ -1117,7 +1117,7 @@ export default function App() {
                 </button>
               </div>
 
-              <form onSubmit={handleUpdateTask} className="p-6 md:p-10 space-y-6 md:space-y-8 max-h-[70vh] overflow-y-auto">
+              <form onSubmit={handleUpdateTask} className="p-6 md:p-10 space-y-6 md:space-y-8 overflow-y-auto flex-1">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Título de la Tarea</label>
@@ -1218,7 +1218,7 @@ export default function App() {
       {/* Change Password Modal */}
       <AnimatePresence>
         {isChangingPassword && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 md:p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1230,7 +1230,7 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 40 }}
-              className="bg-white rounded-[40px] shadow-2xl w-full max-w-md p-0 relative z-10 overflow-hidden border border-slate-100"
+              className="bg-white rounded-3xl md:rounded-[40px] shadow-2xl w-full max-w-md max-h-[90vh] p-0 relative z-10 overflow-hidden border border-slate-100 flex flex-col"
             >
               <div className="p-8 border-b border-slate-100 flex items-center justify-between">
                 <div>
