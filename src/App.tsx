@@ -821,12 +821,16 @@ export default function App() {
               value={stats.total} 
               icon={<LayoutDashboard className="text-brand" size={24} />}
               color="brand"
+              onClick={() => setCurrentCategory('all')}
+              active={currentCategory === 'all'}
             />
             <StatCard 
               label="Pendientes" 
               value={stats.pending} 
               icon={<Clock className="text-amber-600" size={24} />}
               color="amber"
+              onClick={() => setCurrentCategory('assigned')}
+              active={currentCategory === 'assigned'}
             />
             <StatCard 
               label="En Alerta" 
@@ -834,6 +838,7 @@ export default function App() {
               icon={<AlertCircle className="text-orange-600" size={24} />}
               color="orange"
               showWarning={stats.nearExpiration > 0}
+              onClick={() => setCurrentCategory('assigned')}
             />
             <StatCard 
               label="Vencidas" 
@@ -841,30 +846,50 @@ export default function App() {
               icon={<AlertTriangle className="text-red-600" size={24} />}
               color="red"
               highlight={stats.overdue > 0}
+              onClick={() => setCurrentCategory('overdue')}
+              active={currentCategory === 'overdue'}
             />
           </div>
 
-          {/* Quick Info Card */}
+          {/* Resumen de Gestión */}
           <div className="col-span-12 lg:col-span-4 bg-brand rounded-[32px] p-8 text-white shadow-xl flex flex-col justify-between overflow-hidden relative group">
             <div className="absolute -right-10 -top-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl group-hover:bg-accent/30 transition-colors animate-pulse" />
             <div className="relative z-10">
-              <h3 className="text-xl font-black mb-2 tracking-tight">Carga del Equipo</h3>
-              <p className="text-accent text-xs font-semibold leading-relaxed mb-6">
-                El 85% de las tareas críticas han sido resueltas esta semana.
+              <h3 className="text-xl font-black mb-2 tracking-tight">Resumen de Gestión</h3>
+              <p className="text-white/70 text-xs font-semibold leading-relaxed mb-6">
+                {stats.completed} de {stats.total} tareas completadas
               </p>
               
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-accent/80">Gestión de Tareas</span>
-              <div className="h-1 w-24 bg-brand/50 rounded-full overflow-hidden">
-                <div className="h-full bg-accent w-[85%]" />
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-accent/80">Progreso General</span>
+              <span className="text-sm font-black text-accent">{stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%</span>
+            </div>
+            <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+              <div className="h-full bg-accent rounded-full transition-all duration-700" style={{ width: `${stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%` }} />
+            </div>
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="text-center">
+                <p className="text-lg font-black text-accent">{stats.pending}</p>
+                <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Activas</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-black text-accent">{stats.overdue}</p>
+                <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Vencidas</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-black text-accent">{stats.completed}</p>
+                <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Cerradas</p>
               </div>
             </div>
           </div>
             </div>
             
-            <button className="mt-8 bg-white/10 hover:bg-white/20 transition-all border border-white/20 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest self-start">
-              Ver Detalle
+            <button 
+              onClick={() => setCurrentCategory('managed')}
+              className="mt-6 bg-white/10 hover:bg-white/20 transition-all border border-white/20 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest self-start"
+            >
+              Ver Gestionadas
             </button>
           </div>
         </div>
@@ -1332,7 +1357,7 @@ function NavItem({ icon, label, active = false, badge = 0, onClick }: { icon: Re
   );
 }
 
-function StatCard({ label, value, icon, color, highlight = false, showWarning = false }: any) {
+function StatCard({ label, value, icon, color, highlight = false, showWarning = false, onClick, active = false }: any) {
   const colorSchema: any = {
     brand: { bg: "bg-brand-light", icon: "text-brand", border: "border-brand-light" },
     amber: { bg: "bg-accent/20", icon: "text-[#d4b000]", border: "border-accent/30" },
@@ -1345,9 +1370,12 @@ function StatCard({ label, value, icon, color, highlight = false, showWarning = 
   return (
     <motion.div 
       whileHover={{ y: -6, scale: 1.02 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={onClick}
       className={cn(
-        "p-6 rounded-[32px] border bg-white transition-all duration-300 shadow-sm",
-        highlight ? "border-red-200 bg-red-50/10 shadow-[0_12px_40px_rgb(239,68,68,0.12)]" : "border-slate-100"
+        "p-6 rounded-[32px] border bg-white transition-all duration-300 shadow-sm cursor-pointer select-none",
+        highlight ? "border-red-200 bg-red-50/10 shadow-[0_12px_40px_rgb(239,68,68,0.12)]" : "border-slate-100",
+        active && !highlight && "ring-2 ring-brand/30 border-brand/20 shadow-[0_8px_30px_rgba(10,108,69,0.1)]"
       )}
     >
       <div className="flex items-center justify-between mb-6">
