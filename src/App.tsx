@@ -427,6 +427,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...taskToEdit,
+          dueDate: format(new Date(), 'yyyy-MM-dd'),
           previousStatus: originalTask?.status
         }),
       });
@@ -1133,12 +1134,12 @@ export default function App() {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Fecha Gestión</label>
                     <input 
-                      required
-                      type="date" 
-                      className="w-full px-5 md:px-6 py-3 md:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand transition-all font-bold text-slate-700"
-                      value={taskToEdit.dueDate || ''}
-                      onChange={e => setTaskToEdit({...taskToEdit, dueDate: e.target.value})}
+                      disabled
+                      type="text" 
+                      className="w-full px-5 md:px-6 py-3 md:py-4 bg-slate-100 rounded-2xl border-none font-bold text-slate-500 cursor-not-allowed"
+                      value={format(new Date(), 'dd/MM/yyyy')}
                     />
+                    <p className="text-[9px] text-slate-400 px-1">Se registra automáticamente al actualizar</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Estado</label>
